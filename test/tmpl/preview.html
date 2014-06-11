@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>svg-sprite preview</title>
-        <link href="{{css}}" rel="stylesheet" type="text/css"/>
+        <link href="{{cssPath}}" rel="stylesheet" type="text/css"/>
         <style>
 body {
     padding: 0;
@@ -43,12 +43,12 @@ div {
 }
         </style>
     </head>
-    <body> 
+    <body>
         <ol>
             {{#svg}}
             <li>
                 <figure>
-                    <div class="{{#selector}}{{#first}}{{raw}}{{/first}}{{/selector}} {{#dims}}{{#dimensions}}{{#selector}}{{#last}}{{raw}}{{/last}}{{/selector}}{{/dimensions}}{{/dims}}">&nbsp;</div>
+                    <div class="{{common}} {{#selector}}{{#first}}{{raw}}{{/first}}{{/selector}} {{#dims}}{{#dimensions}}{{#selector}}{{#last}}{{raw}}{{/last}}{{/selector}}{{/dimensions}}{{/dims}}">&nbsp;</div>
                     <figcaption>{{name}}</figcaption>
                 </figure>
             </li>

@@ -1,6 +1,10 @@
 {{#common}}.{{prefix}} {
 	background-repeat: no-repeat;
-	background-image: url({{{sprite}}});
+	background-image: url("{{{svgPath}}}");
+}
+
+.no-svg .{{prefix}} {
+	background-image: url("{{{pngPath}}}");
 }
 
 {{/common}}{{#svg}}{{#selector}}.{{expression}}{{^last}},

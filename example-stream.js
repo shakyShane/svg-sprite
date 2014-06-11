@@ -6,9 +6,23 @@ var File   = require('vinyl');
 var mustache = require('mustache');
 
 var config = {
-    common: "icon",
+    common: "svg-icon",
+    selector: "icon-%f",
     dims: true,
-    layout: "diagonal",
+    layout: "horizontal",
+    svg: {
+        file: "svg.svg",
+        path: "%f"
+    },
+    css: {
+        file: "css.css"
+    },
+    png: {
+        path: "%f"
+    },
+    preview: {
+        file: "prevew.html"
+    },
     render: {
         css: true
     }
@@ -18,7 +32,6 @@ var svgs = sprite.createSprite(config);
 
 function svgSprites() {
 
-    var files = [];
     var tasks = {};
     var counter = 0;
 
@@ -39,38 +52,48 @@ function svgSprites() {
             var svg = svgs.toSVG(false);
             var data = svgs.data;
 
+            // Generate the file path to the SVG
+            data.svgPath = config.svg.path.replace("%f", config.svg.file);
+
+            if (config.png) {
+                data.pngPath = config.png.path.replace("%f", config.svg.file.replace(/(\.svg)$/, ".png"));
+            }
+
+            data.cssPath = config.css.file;
+
             that.push(new File({
                 cwd:  "./",
                 base: "./",
-                path: "./svg.svg",
+                path: config.svg.file,
                 contents: new Buffer(svg)
             }));
 
-            var css    = mustache.render(fs.readFileSync(path.resolve("tmpl/sprite.css"), 'utf-8'), data);
-            var inline = mustache.render(fs.readFileSync(path.resolve("tmpl/sprite.inline.svg"), 'utf-8'), data);
+            var css     = mustache.render(fs.readFileSync(path.resolve("tmpl/sprite.css"), 'utf-8'), data);
+            var inline  = mustache.render(fs.readFileSync(path.resolve("tmpl/sprite.inline.svg"), 'utf-8'), data);
+            var preview = mustache.render(fs.readFileSync(path.resolve("test/tmpl/preview.html"), 'utf-8'), data);
 
             that.push(new File({
                 cwd:  "./",
                 base: "./",
-                path: "./svg.css",
+                path: config.css.file,
                 contents: new Buffer(css)
             }));
 
             that.push(new File({
                 cwd:  "./",
                 base: "./",
-                path: "./svg.inline.svg",
-                contents: new Buffer(inline)
+                path: config.preview.file,
+                contents: new Buffer(preview)
             }));
 
             cb(null);
+
             return true;
+
         });
     });
 }
 
-
-
-vfs.src("test/badfiles/*.svg")
+vfs.src("test/files/*.svg")
     .pipe(svgSprites(config))
     .pipe(vfs.dest("test/output"));
